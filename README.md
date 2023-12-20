@@ -2,7 +2,7 @@
 
 A modern and minimalist note-taking web app built using React.js and Tailwind CSS.
 
-![Note Swift App](./note-swift-app.png)
+![Note Swift App](./public/favicon.ico)
 
 ## Tech Stack 💻
 

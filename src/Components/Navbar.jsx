@@ -8,8 +8,14 @@ import { ReactComponent as Underline } from '../assets/icons/underline-solid.svg
 import { ReactComponent as Download } from '../assets/icons/download.svg'
 import { ReactComponent as Plus } from '../assets/icons/Plus.svg'
 import Dropdown from './Dropdown'
+import { Constants } from '../utils/constants'
+import { useMainContext } from '../Context/MainContext'
 
-const Navbar = () => {
+const Navbar = (props) => {
+    const { command, setcommand } = useMainContext()
+    const handleClick = (param) => {
+        setcommand(() => param)
+    }
     return (
         <div className="flex sticky top-0 z-50 justify-between gap-10 items-center px-3 py-2  border-b border-slate-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
             <img src={logo} alt="" className="w-8 h-8 " />
@@ -17,21 +23,21 @@ const Navbar = () => {
                 <input type="text" placeholder='Untitled document' className="text-slate-200   py-2 bg-transparent  border-0 focus-visible:border-0 outline-none border-transparent  active:border-0 outline-none " />
             </div>
             <div className="elements h-100 w-100 flex flex-row justify-between items-center  border-l pl-2 border-slate-200">
-                <button className='border-1 border-slate-200 p-2 '>
+                <button onClick={() => handleClick(Constants.bold)} className='border-1 border-slate-200 p-2 '>
                     <Bold fill='#e2e8f0' />
                 </button>
-                <button className='border-1 border-slate-200 p-2 '>
+                <button onClick={() => handleClick(Constants.italic)} className='border-1 border-slate-200 p-2 '>
                     <Itaclic fill='#e2e8f0' />
                 </button>
-                <button className='border-1 border-slate-200 p-2 '>
+                <button onClick={() => handleClick(Constants.underline)} className='border-1 border-slate-200 p-2 '>
                     <Underline fill='#e2e8f0' />
                 </button>
-                <button className='border-1 border-slate-200 p-2 '>
+                {/* <button onClick={()=>handleClick(Constants.)} className='border-1 border-slate-200 p-2 '>
                     <OrderdList fill='#e2e8f0' />
                 </button>
-                <button className='border-1 border-slate-200 p-2 '>
+                <button onClick={()=>handleClick(Constants.)} className='border-1 border-slate-200 p-2 '>
                     <UnOrderdList fill='#e2e8f0' />
-                </button>
+                </button> */}
                 <Dropdown />
             </div>
             <div className=" w-fit flex gap-2 flex-row justify-start items-center border-l px-2 border-slate-200">
