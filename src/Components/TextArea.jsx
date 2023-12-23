@@ -4,22 +4,30 @@ import React, { useEffect, useRef, useState } from "react";
 import { useMainContext } from '../Context/MainContext';
 import { Constants } from '../utils/constants';
 const TextArea = (props) => {
-    const { command, setcommand } = useMainContext()
-    const [toggleFlag, settoggleFlag] = useState(false)
-    const [lastCmd, setlastCmd] = useState('')
+    const { command, } = useMainContext()
     useEffect(() => {
-        console.log("Commad==>", command);
-        command != '' && handleClick(command)
-        switch (command) {
-            case Constants.bold || Constants.italic || Constants.underline:
-                handleClick(command)
-                break;
-
+        editorRef.current.focus();
+        if (command.name != '') {
+            console.log(command.name);
+            switch (command.name) {
+                case Constants.bold:
+                    handleClick(command.name)
+                    break;
+                case Constants.italic:
+                    handleClick(command.name)
+                    break;
+                case Constants.underline:
+                    handleClick(command.name)
+                    break;
+                case Constants.h1:
+                    handleClick(command.name)
+                    break;
             default:
-                toggleBlockType(command)
+                    toggleBlockType(command.name)
                 break;
+            }
         }
-    }, [command, toggleFlag])
+    }, [command])
 
     const editorRef = useRef("");
     const [editorState, setEditorState] = React.useState(
@@ -37,36 +45,20 @@ const TextArea = (props) => {
         return 'not-handled';
     };
     const handleClick = (paramCmd) => {
-        setEditorState(RichUtils.toggleInlineStyle(editorState, paramCmd));
+        console.log("par", paramCmd);
+        const newState = RichUtils.toggleInlineStyle(editorState, paramCmd);
+
+        setEditorState(newState);
     };
     const toggleBlockType = (blockType) => {
-        RichUtils.toggleBlockType(editorState, blockType);
-        // RichUtils.toggleBlockType(editorState, blockType);
+        console.log("toggle block", blockType);
+        const newState = RichUtils.toggleBlockType(editorState, blockType);
+        setEditorState(newState);
+
     };
     const styleMap = {
         'STRIKETHROUGH': {
             textDecoration: 'line-through',
-        },
-        'H1': {
-            fontSize: '32px'
-        },
-        'H2': {
-            fontSize: '24px'
-        },
-        'H3': {
-            fontSize: '19px'
-        },
-        'H4': {
-            fontSize: '16px'
-        },
-        'H5': {
-            fontSize: '14px'
-        },
-        'H6': {
-            fontSize: '14px'
-        },
-        'N': {
-            fontSize: '12px'
         },
     };
 
@@ -78,8 +70,8 @@ const TextArea = (props) => {
     // H6 = 13
     return <div className='m-2'><Editor
         ref={editorRef}
-        className="mt-2"
-        placeholder={"Satrt your Note here ..."}
+        className="mt-2 mx-3"
+        placeholder={"Start your Note here ..."}
         editorState={editorState}
         autoCapitalize="true"
         spellCheck

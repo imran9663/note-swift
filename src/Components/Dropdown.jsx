@@ -5,14 +5,13 @@ import { Constants } from "../utils/constants";
 
 
 export default function Dropdown () {
-    const { setcommand } = useMainContext()
+    const { command, setcommand } = useMainContext()
     const handleChange = (e) => {
-        setcommand(() => e.target.value)
-
+        setcommand(() => ({ ...command, name: e.target.value }))
     }
     return (
         <div className="relative inline-block text-left border-0 ">
-            <select onChange={handleChange} class=" justify-center  rounded-md bg-slate-800 px-3  py-1 text-sm font-semibold text-slate-200  shadow-sm ring-0 hover:bg-slate-600
+            <select onChange={handleChange} defaultValue={Constants.normal} className=" justify-center  rounded-md bg-slate-800 px-3  py-1 text-sm font-semibold text-slate-200  shadow-sm ring-0 hover:bg-slate-600
             after:content-['*'] after:ml-0.5 after:text-red-500  ">
                 <option value={Constants.h1} className='text-slate-200  px-4 py-2 bg-slate-800  min-w-5 text-4xl hover: bg-slate-600 text-slate-100' >H1 Heading...</option>
                 <option value={Constants.h2} className='text-slate-200  px-4 py-2 bg-slate-800 min-w-5 text-3xl hover: bg-slate-600 text-slate-100' > H2 Heading...</option>
