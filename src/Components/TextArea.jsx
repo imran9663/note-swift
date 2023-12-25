@@ -1,61 +1,42 @@
 import { Editor, EditorState, RichUtils } from 'draft-js';
 import 'draft-js/dist/Draft.css';
-import React, { useEffect, useRef, useState } from "react";
-import { useMainContext } from '../Context/MainContext';
-import { Constants } from '../utils/constants';
+import React, { useEffect, useRef } from "react";
 const TextArea = (props) => {
-    const { command, } = useMainContext()
+
+    const { editorState, setEditorState } = props
+
     useEffect(() => {
         editorRef.current.focus();
-        if (command.name != '') {
-            console.log(command.name);
-            switch (command.name) {
-                case Constants.bold:
-                    handleClick(command.name)
-                    break;
-                case Constants.italic:
-                    handleClick(command.name)
-                    break;
-                case Constants.underline:
-                    handleClick(command.name)
-                    break;
-                case Constants.h1:
-                    handleClick(command.name)
-                    break;
-            default:
-                    toggleBlockType(command.name)
-                break;
-            }
-        }
-    }, [command])
+    }, [])
 
     const editorRef = useRef("");
-    const [editorState, setEditorState] = React.useState(
-        () => EditorState.createEmpty(),
-    );
-    const onChange = (newEditorState) => {
-        setEditorState(newEditorState);
-    };
+
+    useEffect(() => {
+        console.log("getPlainText", editorState.getCurrentContent());
+    }, [editorState])
+
+
+    const onChange = (newEditorState) => (setEditorState(newEditorState))
     const handleKeyCommand = (command, editorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command);
         if (newState) {
-            setEditorState(newState);
+            onChange(newState);
             return 'handled';
         }
         return 'not-handled';
     };
     const handleClick = (paramCmd) => {
-        console.log("par", paramCmd);
+        // console.log("par", paramCmd);
         const newState = RichUtils.toggleInlineStyle(editorState, paramCmd);
-
-        setEditorState(newState);
+        onChange(newState);
     };
     const toggleBlockType = (blockType) => {
-        console.log("toggle block", blockType);
+        // console.log("toggle block", blockType);
         const newState = RichUtils.toggleBlockType(editorState, blockType);
-        setEditorState(newState);
+        onChange(newState);
 
     };
+    const handleChange = (newState) => onChange(newState)
     const styleMap = {
         'STRIKETHROUGH': {
             textDecoration: 'line-through',
@@ -78,7 +59,7 @@ const TextArea = (props) => {
         customStyleMap={styleMap}
         stripPastedStyles={false}
         handleKeyCommand={handleKeyCommand}
-        onChange={setEditorState} />
+        onChange={handleChange} />
     </div>;
 
 };
