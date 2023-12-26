@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Editor, EditorState, ContentState, RichUtils } from 'draft-js';
+import { Editor, EditorState, Modifier, ContentState, RichUtils } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import { Constants } from '../utils/constants';
 import { Icons } from '../assets/icons';
@@ -10,7 +10,8 @@ const Navbar = ({ editorState, setEditorState }) => {
 
     const [file, setfile] = useState({
         name: '',
-        type: ''
+        type: '',
+        fileExt: ''
     })
     const isActiveStyle = (style) => {
         const currentStyle = editorState.getCurrentInlineStyle();
@@ -41,9 +42,8 @@ const Navbar = ({ editorState, setEditorState }) => {
     }
     const handleFileUpload = (e) => {
         const uploadedFile = e.target.files[0]
-        console.log("uploadedFile", uploadedFile);
         if (uploadedFile) {
-            setfile({ ...file, name: uploadedFile.name, type: uploadedFile.type })
+            setfile({ ...file, name: `${String(uploadedFile.name).split('.')[0]}`, type: uploadedFile.type, fileExt: `.${String(uploadedFile.name).split('.')[1]}` })
             const reader = new FileReader();
             reader.onload = (readerEvent) => {
                 const content = readerEvent.target.result;
@@ -78,18 +78,45 @@ const Navbar = ({ editorState, setEditorState }) => {
     const handleDownload = () => {
         const contentState = editorState.getCurrentContent();
         const contentText = contentState.getPlainText();
-        console.log("contentText", contentText);
-        // const blob = new Blob([contentText], { type: 'text/plain' });
-        // const url = URL.createObjectURL(blob);
+        const blob = new Blob([contentText], { type: file.type });
+        const url = URL.createObjectURL(blob);
 
-        // const a = document.createElement('a');
-        // a.href = url;
-        // a.download = 'downloaded_content.txt';
-        // a.click();
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${file.name}${file.fileExt}`;
+        a.click();
 
-        // URL.revokeObjectURL(url);
+        URL.revokeObjectURL(url);
+    };
+    const applyBlockType = (newBlockType) => {
+        const contentState = editorState.getCurrentContent();
+        const selectionState = editorState.getSelection();
+
+        // Remove any existing block type in the selection
+        const withoutStyles = RichUtils.tryToRemoveBlockStyle(editorState);
+
+        // Apply the new block type to the selection
+        const withStyle = Modifier.setBlockType(
+            withoutStyles.getCurrentContent(),
+            withoutStyles.getSelectionAfter(),
+            newBlockType
+        );
+
+        const newState = EditorState.push(editorState, withStyle, 'change-block-type');
+        setEditorState(newState);
     };
 
+    const handleStyleClick = (style) => {
+        let newBlockType = style;
+
+        if (style.startsWith('header')) {
+            const level = parseInt(style.substring(6), 10);
+            newBlockType = level >= 1 && level <= 6 ? `header-${level}` : 'unstyled';
+        }
+
+        applyBlockType(newBlockType);
+    };
+    const headingStyles = [1, 2, 3, 4, 5, 6];
     return (
         <div className=" sticky flex  top-0 z-50 justify-between gap-10 items-center px-3 py-2  border-b border-slate-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
             <img src={Icons.logo} alt="" className="w-8 h-8 " />
@@ -119,9 +146,16 @@ const Navbar = ({ editorState, setEditorState }) => {
                 <button onClick={() => toggleBlockType(Constants.UL)} className={`border-1 border-slate-200 p-2 ${BlockStyleControls(Constants.UL) ? 'bg-slate-600' : ''}`}>
                     <Icons.UnOrderdList fill='#e2e8f0' />
                 </button>
-                < Dropdown
+                {/* < Dropdown
                     handleSelect={handleSelect}
-                />
+                /> */}
+                {/* <div>
+                    {headingStyles.map((level) => (
+                        <button key={level} className={`border-1 border-slate-200 p-2 `} onClick={() => applyBlockType(`header-${level}`)}>
+                            H{level}
+                        </button>
+                    ))}
+                </div> */}
             </div>
             <div className=" w-fit flex gap-2 flex-row justify-start items-center border-l px-2 border-slate-200">
                 <a href="/" target='_blank' type="button" className="py-1 px-3 text-sm font-medium text-center inline-flex items-center text-slate-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
@@ -133,7 +167,7 @@ const Navbar = ({ editorState, setEditorState }) => {
                     </label>
                     <input
                         onChange={handleFileUpload}
-                        accept='text/*' type="file" name="file_upload" id="file_upload" className='hidden' />
+                        accept='text/*, .dox, .org' type="file" name="file_upload" id="file_upload" className='hidden' />
                 </div>
                 <button
                     onClick={handleDownload}
