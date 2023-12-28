@@ -18,10 +18,7 @@ const TextArea = ({ editorState, setEditorState }) => {
     return (
         <div className='m-2'>
             <Editor
-
-
-
-                placeholder='write Someting here ...'
+                placeholder='Start your swift notes here ...'
                 editorState={editorState}
                 onChange={handleEditorChange}
             />

@@ -1,4 +1,3 @@
-import logo from './logo.png'
 import { ReactComponent as Bold } from './Boldsolid.svg'
 import { ReactComponent as Itaclic } from './italic-solid.svg'
 import { ReactComponent as OrderdList } from './list-ol-solid.svg'
@@ -8,8 +7,8 @@ import { ReactComponent as Download } from './download.svg'
 import { ReactComponent as Plus } from './Plus.svg'
 import { ReactComponent as Upload } from './upload.svg'
 import { ReactComponent as Strike } from './Strike.svg'
+import { ReactComponent as Swiftlogo } from './swiftLogo.svg'
 export const Icons = {
-    logo,
     Bold,
     Itaclic,
     OrderdList,
@@ -19,5 +18,6 @@ export const Icons = {
     Plus,
     Upload,
     Strike,
+    Swiftlogo
 
 }

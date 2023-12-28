@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
-import { Editor, EditorState, Modifier, ContentState, RichUtils } from 'draft-js';
+import { ContentState, EditorState, RichUtils } from 'draft-js';
 import 'draft-js/dist/Draft.css';
-import { Constants } from '../utils/constants';
+import React, { useState } from 'react';
+import '../Styles/main.css';
 import { Icons } from '../assets/icons';
-import Dropdown from './Dropdown'
-import '../Styles/main.css'
-import { type } from '@testing-library/user-event/dist/type';
+import { Constants } from '../utils/constants';
 const Navbar = ({ editorState, setEditorState }) => {
 
     const [file, setfile] = useState({
@@ -22,15 +20,12 @@ const Navbar = ({ editorState, setEditorState }) => {
         setEditorState(newState);
     }
     const toggleBlockType = (blockType) => {
-        // console.log("toggle block", blockType)
         const newState = RichUtils.toggleBlockType(editorState, blockType);
         setEditorState(newState);
     };
 
 
-    const handleSelect = (blockType) => {
-        toggleBlockType(blockType)
-    }
+
 
     function BlockStyleControls (style) {
         const selection = editorState.getSelection();
@@ -38,7 +33,7 @@ const Navbar = ({ editorState, setEditorState }) => {
             .getCurrentContent()
             .getBlockForKey(selection.getStartKey())
             .getType();
-        console.log("blkType", blockType);
+        return style === blockType
     }
     const handleFileUpload = (e) => {
         const uploadedFile = e.target.files[0]
@@ -75,51 +70,72 @@ const Navbar = ({ editorState, setEditorState }) => {
         // };
 
     }
+    const getCurrentStyles = () => {
+        const selection = editorState.getSelection();
+        const currentContent = editorState.getCurrentContent();
+        const currentInlineStyle = editorState.getCurrentInlineStyle();
+
+        const styles = [];
+        currentContent.getBlockForKey(selection.getStartKey()).findStyleRanges(
+            (character) => currentInlineStyle.has(character.getStyle()),
+            (start, end) => {
+                styles.push({
+                    style: currentContent.getBlockForKey(selection.getStartKey()).getInlineStyleAt(start),
+                    start,
+                    end,
+                });
+            }
+        );
+
+        return styles;
+    };
     const handleDownload = () => {
         const contentState = editorState.getCurrentContent();
         const contentText = contentState.getPlainText();
-        const blob = new Blob([contentText], { type: file.type });
+        console.log("contentState style", getCurrentStyles());
+        const blob = new Blob([contentText], { type: file.type ? file.type : 'text/plain' });
         const url = URL.createObjectURL(blob);
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${file.name}${file.fileExt}`;
+        a.download = `${file.name ? file.name : 'swift-note'}${file.fileExt ? file.fileExt : '.txt'}`;
         a.click();
 
         URL.revokeObjectURL(url);
     };
-    const applyBlockType = (newBlockType) => {
-        const contentState = editorState.getCurrentContent();
-        const selectionState = editorState.getSelection();
+    // const applyBlockType = (newBlockType) => {
+    //     const contentState = editorState.getCurrentContent();
+    //     const selectionState = editorState.getSelection();
 
-        // Remove any existing block type in the selection
-        const withoutStyles = RichUtils.tryToRemoveBlockStyle(editorState);
+    //     // Remove any existing block type in the selection
+    //     const withoutStyles = RichUtils.tryToRemoveBlockStyle(editorState);
 
-        // Apply the new block type to the selection
-        const withStyle = Modifier.setBlockType(
-            withoutStyles.getCurrentContent(),
-            withoutStyles.getSelectionAfter(),
-            newBlockType
-        );
+    //     // Apply the new block type to the selection
+    //     const withStyle = Modifier.setBlockType(
+    //         withoutStyles.getCurrentContent(),
+    //         withoutStyles.getSelectionAfter(),
+    //         newBlockType
+    //     );
 
-        const newState = EditorState.push(editorState, withStyle, 'change-block-type');
-        setEditorState(newState);
-    };
+    //     const newState = EditorState.push(editorState, withStyle, 'change-block-type');
+    //     setEditorState(newState);
+    // };
 
-    const handleStyleClick = (style) => {
-        let newBlockType = style;
+    // const handleStyleClick = (style) => {
+    //     let newBlockType = style;
 
-        if (style.startsWith('header')) {
-            const level = parseInt(style.substring(6), 10);
-            newBlockType = level >= 1 && level <= 6 ? `header-${level}` : 'unstyled';
-        }
+    //     if (style.startsWith('header')) {
+    //         const level = parseInt(style.substring(6), 10);
+    //         newBlockType = level >= 1 && level <= 6 ? `header-${level}` : 'unstyled';
+    //     }
 
-        applyBlockType(newBlockType);
-    };
-    const headingStyles = [1, 2, 3, 4, 5, 6];
+    //     applyBlockType(newBlockType);
+    // };
+    // const headingStyles = [1, 2, 3, 4, 5, 6];
     return (
         <div className=" sticky flex  top-0 z-50 justify-between gap-10 items-center px-3 py-2  border-b border-slate-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
-            <img src={Icons.logo} alt="" className="w-8 h-8 " />
+            {/* <img src={Icons.Swiftlogo} alt="" className="w-8 h-8 " /> */}
+            <Icons.Swiftlogo width={36} height={36} />
             <div className="input   border-l border-slate-200 px-2">
                 <input type="text"
                     placeholder='Untitled document'
@@ -167,7 +183,7 @@ const Navbar = ({ editorState, setEditorState }) => {
                     </label>
                     <input
                         onChange={handleFileUpload}
-                        accept='text/*, .dox, .org' type="file" name="file_upload" id="file_upload" className='hidden' />
+                        accept='text/*,application/rtf,application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document' type="file" name="file_upload" id="file_upload" className='hidden' />
                 </div>
                 <button
                     onClick={handleDownload}
