@@ -1,4 +1,4 @@
-import { ContentState, EditorState, RichUtils } from 'draft-js';
+import { ContentState, EditorState, RichUtils, Modifier } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import React, { useState } from 'react';
 import '../Styles/main.css';
@@ -16,8 +16,28 @@ const Navbar = ({ editorState, setEditorState }) => {
         return currentStyle.has(style);
     };
     const handleClick = (param) => {
-        const newState = RichUtils.toggleInlineStyle(editorState, param);
-        setEditorState(newState);
+        if (param === 'CODE') {
+            setEditorState((prevState) => {
+                const selection = prevState.getSelection();
+                const currentStyle = prevState.getCurrentInlineStyle();
+                const newEditorState = RichUtils.toggleInlineStyle(prevState, param);
+
+                // If CODE style is applied, add a newline character after the code block
+                if (!currentStyle.has('CODE') && newEditorState !== prevState) {
+                    const contentWithNewline = Modifier.insertText(
+                        newEditorState.getCurrentContent(),
+                        selection,
+                        '\n'
+                    );
+                    return EditorState.push(newEditorState, contentWithNewline, 'change-inline-style');
+                }
+                setEditorState(newEditorState);
+            });
+        } else {
+            const newState = RichUtils.toggleInlineStyle(editorState, param);
+            setEditorState(newState);
+        }
+
     }
     const toggleBlockType = (blockType) => {
         const newState = RichUtils.toggleBlockType(editorState, blockType);
@@ -133,12 +153,12 @@ const Navbar = ({ editorState, setEditorState }) => {
     // };
     // const headingStyles = [1, 2, 3, 4, 5, 6];
     return (
-        <div className=" sticky flex  top-0 z-50 justify-between gap-10 items-center px-3 py-2  border-b border-slate-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+        <div style={{ minHeight: '3rem' }} className=" sticky flex  top-0 z-50 justify-between gap-10 items-center px-3 py-2  border-b border-slate-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
             {/* <img src={Icons.Swiftlogo} alt="" className="w-8 h-8 " /> */}
             <Icons.Swiftlogo width={36} height={36} />
             <div className="input   border-l border-slate-200 px-2">
                 <input type="text"
-                    placeholder='Untitled document'
+                    placeholder='swift-note (1)'
                     value={file.name}
                     onChange={(e) => (setfile({ ...file, name: e.target.value }))}
                     className="text-slate-200 py-2 bg-transparent  border-0 focus-visible:border-0 outline-none border-transparent  active:border-0 outline-none " />
@@ -156,6 +176,10 @@ const Navbar = ({ editorState, setEditorState }) => {
                 <button onClick={() => handleClick(Constants.strikethrough)} className={`border-1  rounded-sm border-slate-200 p-2 ${isActiveStyle(Constants.strikethrough) ? 'bg-slate-600' : ''}`}>
                     <Icons.Strike fill='#e2e8f0' />
                 </button>
+                {/* <button onClick={() => handleClick(Constants.code)} className={`border-1  rounded-sm border-slate-200 p-2 ${isActiveStyle(Constants.strikethrough) ? 'bg-slate-600' : ''}`}>
+                    
+                    C
+                </button> */}
                 <button onClick={() => toggleBlockType(Constants.OL)} className={`border-1 border-slate-200 p-2 ${BlockStyleControls(Constants.OL) ? 'bg-slate-600' : ''}`}>
                     <Icons.OrderdList fill='#e2e8f0' />
                 </button>

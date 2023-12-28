@@ -1,5 +1,5 @@
 import React from 'react';
-import { Editor, RichUtils } from 'draft-js';
+import { Editor, RichUtils, DefaultDraftBlockRenderMap } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 
 const TextArea = ({ editorState, setEditorState }) => {
@@ -14,13 +14,30 @@ const TextArea = ({ editorState, setEditorState }) => {
         }
         return 'not-handled';
     };
-
+    const styleMap = {
+        CODE: {
+            backgroundColor: '#282a36',
+            color: '#f8f8f2',
+            fontFamily: 'monospace',
+            padding: '0.2em',
+            margin: '0',
+            borderRadius: '0.3em',
+        },
+    }
+    const blockRenderMap = DefaultDraftBlockRenderMap.merge({
+        CODE: { element: 'code' },
+    });
     return (
-        <div className='m-2'>
+        <div className='px-1 font-coustom'>
             <Editor
+                className='font-coustom'
                 placeholder='Start your swift notes here ...'
                 editorState={editorState}
+                handleKeyCommand={handleKeyCommand}
                 onChange={handleEditorChange}
+                autoCorrect='true'
+                customStyleMap={styleMap}
+                blockRenderMap={blockRenderMap}
             />
         </div>
     );

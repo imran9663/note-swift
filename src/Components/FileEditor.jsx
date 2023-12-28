@@ -1,102 +1,83 @@
-import React, { useState } from 'react';
-import { Editor, EditorState, RichUtils, convertToRaw, ContentState } from 'draft-js';
-import '../Styles/main.css'
-const FileEditor = () => {
+import React, { useState, useEffect } from 'react';
+import { Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap } from 'draft-js';
+import 'draft-js/dist/Draft.css';
+
+const MyEditor = () => {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
-    const isActiveStyle = (style) => {
-        const currentStyle = editorState.getCurrentInlineStyle();
-        return currentStyle.has(style);
+
+    // Define a custom block type for code blocks
+    const CODE_BLOCK_TYPE = 'code-block';
+
+    // Define a custom style map for the Dracula theme
+    const customStyleMap = {
+        CODE: {
+            backgroundColor: '#282a36',
+            color: '#f8f8f2',
+            fontFamily: 'monospace',
+            padding: '0.2em',
+            margin: '0',
+            borderRadius: '0.3em',
+        },
+    // Add other custom styles as needed
     };
+
+    useEffect(() => {
+        // Set the custom style map
+        setEditorState(EditorState.set(editorState, { inlineStyleOverride: customStyleMap }));
+    }, [editorState]);
 
     const handleStyleClick = (style) => {
-        setEditorState(RichUtils.toggleInlineStyle(editorState, style));
-    };
-
-    const handleListClick = (listType) => {
-        setEditorState(RichUtils.toggleBlockType(editorState, listType));
-    };
-
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                const content = e.target.result;
-                // const editorStateWithContent = EditorState.createWithContent(
-                //     convertToRaw(EditorState.createWithContent(ContentState.createFromText(content)).getCurrentContent())
-                // );
-                const contentState = ContentState.createFromText(content);
-                const editorStateWithContent = EditorState.createWithContent(contentState);
-                // const convertedContent = convertToRaw(editorStateWithContent)
-                setEditorState(editorStateWithContent);
-            };
-
-            reader.readAsText(file);
+        // Handle code block separately
+        if (style === 'CODE') {
+            setEditorState((prevState) => {
+                const newEditorState = RichUtils.toggleBlockType(prevState, CODE_BLOCK_TYPE);
+                return newEditorState;
+            });
+        } else {
+        // For other styles, use RichUtils.toggleInlineStyle
+            setEditorState(RichUtils.toggleInlineStyle(editorState, style));
         }
     };
 
-    const handleDownload = () => {
-        const contentState = editorState.getCurrentContent();
-        const contentText = contentState.getPlainText();
+    // Define a custom block renderer for the code block
+    const blockRenderMap = DefaultDraftBlockRenderMap.merge({
+        [CODE_BLOCK_TYPE]: { element: 'code' },
+    });
 
-        // Convert content styles to RTF format
-        // const rtfContent = `{{\\rtf1\\ansi\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 Arial;}}{\\colortbl ;\\red0\\green0\\blue0;}\\viewkind4\\uc1\\pard\\cf1\\f0\\fs17 ${contentText} \\par}}`;
-
-        const blob = new Blob([contentText], { type: 'application/rtf' });
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'edited_content.rtf';
-        a.click();
-        URL.revokeObjectURL(url);
+    const blockRendererFn = (contentBlock) => {
+        const type = contentBlock.getType();
+        if (type === CODE_BLOCK_TYPE) {
+            return {
+                component: 'code',
+                props: {
+                    style: {
+                        whiteSpace: 'pre-wrap',
+                    },
+                },
+            };
+        }
     };
 
     return (
-        <div className='p-4'>
-            <div className=' sticky flex  pb-2 flex-row justify-start items-center gap-2 border-b-2 border-slate-500'>
-                <div>
-                    <button className="py-1 px-3 text-sm font-medium text-center inline-flex items-center text-slate-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        onClick={() => handleStyleClick('BOLD')}
-                        style={{ fontWeight: isActiveStyle('BOLD') ? 'bold' : 'normal' }}
-                    >
-                        B
-                    </button>
-                    <button className="py-1 px-3 text-sm font-medium text-center inline-flex items-center text-slate-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        onClick={() => handleStyleClick('UNDERLINE')}
-                        style={{ textDecoration: isActiveStyle('UNDERLINE') ? 'underline' : 'none' }}
-                    >
-                        U
-                    </button>
-                </div>
-                <div>
-                    <button className="py-1 px-3 text-sm font-medium text-center inline-flex items-center text-slate-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        onClick={() => handleListClick('unordered-list-item')}
-                        style={{ listStyleType: 'none', marginLeft: '0' }}
-                    >
-                        UL
-                    </button>
-                    <button className="py-1 px-3 text-sm font-medium text-center inline-flex items-center text-slate-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        onClick={() => handleListClick('ordered-list-item')}
-                        style={{ listStyleType: 'decimal', marginLeft: '0' }}
-                    >
-                        OL
-                    </button>
-                    <input className='' type="file" accept="text/*" onChange={handleFileChange} />
-                    <button className="py-1 px-3 text-sm font-medium text-center inline-flex items-center text-slate-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={handleDownload}>Download as RTF</button>
-                </div>
-
+        <div>
+            <div>
+                <button onClick={() => handleStyleClick('BOLD')}>Bold</button>
+                <button onClick={() => handleStyleClick('ITALIC')}>Italic</button>
+                <button onClick={() => handleStyleClick('UNDERLINE')}>Underline</button>
+                <button onClick={() => handleStyleClick('CODE')}>Code</button>
+                {/* Add other styling buttons as needed */}
             </div>
-
-            <Editor
-                editorState={editorState}
-                placeholder='Write here ...'
-                onChange={(newEditorState) => setEditorState(newEditorState)}
-            />
+            <div>
+                <Editor
+                    editorState={editorState}
+                    onChange={(newEditorState) => setEditorState(newEditorState)}
+                    customStyleMap={customStyleMap}
+                    blockRenderMap={blockRenderMap}
+                    blockRendererFn={blockRendererFn}
+                />
+            </div>
         </div>
     );
 };
 
-export default FileEditor;
+export default MyEditor;
