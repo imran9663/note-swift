@@ -152,8 +152,16 @@ const Navbar = ({ editorState, setEditorState }) => {
     //     applyBlockType(newBlockType);
     // };
     // const headingStyles = [1, 2, 3, 4, 5, 6];
+    const handleUndo = () => {
+        setEditorState(EditorState.undo(editorState));
+    };
+
+    const handleRedo = () => {
+        setEditorState(EditorState.redo(editorState));
+    };
+
     return (
-        <div style={{ minHeight: '3rem' }} className=" sticky flex  top-0 z-50 justify-between gap-10 items-center px-3 py-2  border-b border-slate-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+        <div style={{ minHeight: '2rem', paddingTop: '3px', paddingBottom: '3px' }} className=" sticky flex  top-0 z-50 justify-between gap-10 items-center px-3 border-b border-slate-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
             {/* <img src={Icons.Swiftlogo} alt="" className="w-8 h-8 " /> */}
             <Icons.Swiftlogo width={36} height={36} />
             <div className="input   border-l border-slate-200 px-2">
@@ -164,9 +172,11 @@ const Navbar = ({ editorState, setEditorState }) => {
                     className="text-slate-200 py-2 bg-transparent  border-0 focus-visible:border-0 outline-none border-transparent  active:border-0 outline-none " />
             </div>
             <div className="elements h-100 w-100 flex flex-row justify-between items-center gap-1  border-l pl-2 py-1 border-slate-200">
-                <button onClick={() => handleClick('BOLD')} className={`border-1 rounded-sm border-slate-200 p-2 ${isActiveStyle(Constants.bold) ? 'bg-slate-600' : ''}`}>
+
+                <button data-tooltip-target="tooltip-default" data-tooltip-placement="bottom" onClick={() => handleClick('BOLD')} className={`border-1 rounded-sm border-slate-200 p-2 ${isActiveStyle(Constants.bold) ? 'bg-slate-600' : ''}`}>
                     <Icons.Bold fill='#e2e8f0' />
                 </button>
+
                 <button onClick={() => handleClick(Constants.italic)} className={`border-1  rounded-sm border-slate-200 p-2 ${isActiveStyle(Constants.italic) ? 'bg-slate-600' : ''}`}>
                     <Icons.Itaclic fill='#e2e8f0' />
                 </button>
@@ -196,6 +206,13 @@ const Navbar = ({ editorState, setEditorState }) => {
                         </button>
                     ))}
                 </div> */}
+                <button onClick={() => handleUndo()} className={`border-1 border-slate-200 p-2 ${BlockStyleControls(Constants.OL) ? 'bg-slate-600' : ''}`}>
+                    <Icons.RotateLeft fill='#e2e8f0' />
+
+                </button>
+                <button onClick={() => handleRedo()} className={`border-1 border-slate-200 p-2 ${BlockStyleControls(Constants.OL) ? 'bg-slate-600' : ''}`}>
+                    <Icons.RotateRight fill='#e2e8f0' />
+                </button>
             </div>
             <div className=" w-fit flex gap-2 flex-row justify-start items-center border-l px-2 border-slate-200">
                 <a href="/" target='_blank' type="button" className="py-1 px-3 text-sm font-medium text-center inline-flex items-center text-slate-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">

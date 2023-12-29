@@ -4,9 +4,13 @@
 .input input{
     width: 100%;
 }
+.pad-t-1{
+  padding-top: 1rem;
+}
 .DraftEditor-root{
-    min-height: 90vh;
-    height: 90vh;
+  flex-grow: 1;
+    /* min-height: 90vh; */
+    height: calc(100vh - 4rem);
     overflow-y: auto;
 }
 /* Firefox */

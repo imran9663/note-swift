@@ -28,14 +28,15 @@ const TextArea = ({ editorState, setEditorState }) => {
         CODE: { element: 'code' },
     });
     return (
-        <div className='px-1 font-coustom'>
+        <div className='px-1 pt-1 font-coustom bg-slate-800 flex'>
             <Editor
-                className='font-coustom'
+                className='font-coustom pad-t-1'
                 placeholder='Start your swift notes here ...'
                 editorState={editorState}
                 handleKeyCommand={handleKeyCommand}
                 onChange={handleEditorChange}
-                autoCorrect='true'
+                autoCorrect={true}
+                spellCheck={true}
                 customStyleMap={styleMap}
                 blockRenderMap={blockRenderMap}
             />
