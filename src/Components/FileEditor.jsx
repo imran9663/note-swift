@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap } from 'draft-js';
+import { Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap, Modifier } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 
 const MyEditor = () => {
@@ -18,23 +18,40 @@ const MyEditor = () => {
             margin: '0',
             borderRadius: '0.3em',
         },
-    // Add other custom styles as needed
+        // Add other custom styles as needed
     };
 
-    useEffect(() => {
-        // Set the custom style map
-        setEditorState(EditorState.set(editorState, { inlineStyleOverride: customStyleMap }));
-    }, [editorState]);
 
     const handleStyleClick = (style) => {
         // Handle code block separately
         if (style === 'CODE') {
             setEditorState((prevState) => {
-                const newEditorState = RichUtils.toggleBlockType(prevState, CODE_BLOCK_TYPE);
+                const selection = prevState.getSelection();
+                const currentContent = prevState.getCurrentContent();
+                const currentBlock = currentContent.getBlockForKey(selection.getStartKey());
+
+                // If the current block is not a code block, insert a new code block
+                if (currentBlock.getType() !== CODE_BLOCK_TYPE) {
+                    const contentWithCodeBlock = Modifier.setBlockType(
+                        currentContent,
+                        selection,
+                        CODE_BLOCK_TYPE
+                    );
+                    return EditorState.push(
+                        prevState,
+                        contentWithCodeBlock,
+                        'change-block-type'
+                    );
+                }
+
+                // Toggle the CODE style within the code block
+                const newEditorState = RichUtils.toggleInlineStyle(prevState, style);
                 return newEditorState;
             });
+            // setEditorState(RichUtils.toggleCode(editorState))
+
         } else {
-        // For other styles, use RichUtils.toggleInlineStyle
+            // For other styles, use RichUtils.toggleInlineStyle
             setEditorState(RichUtils.toggleInlineStyle(editorState, style));
         }
     };
@@ -60,7 +77,7 @@ const MyEditor = () => {
 
     return (
         <div>
-            <div>
+            <div className='flex gap-2'>
                 <button onClick={() => handleStyleClick('BOLD')}>Bold</button>
                 <button onClick={() => handleStyleClick('ITALIC')}>Italic</button>
                 <button onClick={() => handleStyleClick('UNDERLINE')}>Underline</button>
@@ -69,11 +86,12 @@ const MyEditor = () => {
             </div>
             <div>
                 <Editor
+                    placeholder='write here ...'
                     editorState={editorState}
                     onChange={(newEditorState) => setEditorState(newEditorState)}
                     customStyleMap={customStyleMap}
-                    blockRenderMap={blockRenderMap}
-                    blockRendererFn={blockRendererFn}
+                    // blockRenderMap={blockRenderMap}
+                    //  blockRendererFn={blockRendererFn}
                 />
             </div>
         </div>

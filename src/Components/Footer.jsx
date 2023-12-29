@@ -19,11 +19,12 @@ const Footer = ({ editorState, setEditorState }) => {
         setCharCount(charCount);
     }, [editorState]);
     return (
-        <><div style={{ minHeight: '1rem', paddingTop: '3px' }} className="border-t bg-slate-800 border-slate-600 flex gap-2 flex-row justify-between items-end px-1 ">
+        <><div style={{ minHeight: '1rem', paddingTop: '3px' }} className="z-10 border-t bg-slate-800 border-slate-600 flex gap-2 flex-row justify-between items-end px-1 ">
             <div className=" text-slate-400 text-sm flex flex-row justify-end items-center ">
                 <p className=" "> Made with ❤ by <a className='underline underline-offset-2' href='https://imranpashai.netlify.app/' target='_blank'>Imran Pasha I</a></p>
             </div>
-            <div className=' flex gap-2 flex-row justify-end items-center  text-slate-400 text-sm '><p>Character : {charCount}</p>
+            <div className=' flex gap-2 flex-row justify-end items-center pr-3  text-slate-400 text-sm '>
+                <p>Character : {charCount}</p>
                 <p>Line : {lineCount}</p>
                 <p>Col: {columnCount}</p>
             </div>

@@ -13,6 +13,18 @@
     height: calc(100vh - 4rem);
     overflow-y: auto;
 }
+.sidebar{
+  height: calc(100vh - 2rem);
+}
+pre{
+  width: fit-content;
+  background-color: #282a36;
+            color: #f8f8f2;
+            font: monospace;
+            padding: 0.2em;
+            margin: 0.5rem 1rem;
+            border-radius: 0.3em;
+}
 /* Firefox */
 * {
   scrollbar-width: thin;

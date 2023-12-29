@@ -1,5 +1,8 @@
-import { ContentState, EditorState, RichUtils, Modifier } from 'draft-js';
+import { convertToHTML } from 'draft-convert';
+import { ContentState, EditorState, RichUtils } from 'draft-js';
 import 'draft-js/dist/Draft.css';
+import HtmlToRtfBrowser from 'html-to-rtf-browser';
+import html2pdf from 'html2pdf.js';
 import React, { useState } from 'react';
 import '../Styles/main.css';
 import { Icons } from '../assets/icons';
@@ -17,22 +20,8 @@ const Navbar = ({ editorState, setEditorState }) => {
     };
     const handleClick = (param) => {
         if (param === 'CODE') {
-            setEditorState((prevState) => {
-                const selection = prevState.getSelection();
-                const currentStyle = prevState.getCurrentInlineStyle();
-                const newEditorState = RichUtils.toggleInlineStyle(prevState, param);
-
-                // If CODE style is applied, add a newline character after the code block
-                if (!currentStyle.has('CODE') && newEditorState !== prevState) {
-                    const contentWithNewline = Modifier.insertText(
-                        newEditorState.getCurrentContent(),
-                        selection,
-                        '\n'
-                    );
-                    return EditorState.push(newEditorState, contentWithNewline, 'change-inline-style');
-                }
-                setEditorState(newEditorState);
-            });
+            const newState = RichUtils.toggleCode(editorState);
+            setEditorState(newState);
         } else {
             const newState = RichUtils.toggleInlineStyle(editorState, param);
             setEditorState(newState);
@@ -120,38 +109,37 @@ const Navbar = ({ editorState, setEditorState }) => {
         a.href = url;
         a.download = `${file.name ? file.name : 'swift-note'}${file.fileExt ? file.fileExt : '.txt'}`;
         a.click();
-
         URL.revokeObjectURL(url);
     };
-    // const applyBlockType = (newBlockType) => {
-    //     const contentState = editorState.getCurrentContent();
-    //     const selectionState = editorState.getSelection();
+    const downloadNoteAsDocument = () => {
+        let htmlToRtf = new HtmlToRtfBrowser();
+        const contentState = editorState.getCurrentContent();
+        const contentHtml = convertToHTML(contentState);
+        // console.log("contentHtml", contentHtml);
+        const rtfContent = htmlToRtf.convertHtmlToRtf(contentHtml);
 
-    //     // Remove any existing block type in the selection
-    //     const withoutStyles = RichUtils.tryToRemoveBlockStyle(editorState);
+        const blob = new Blob([rtfContent], { type: 'application/rtf;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${file.name ? file.name : 'swift-note'}.rtf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+    const downloadAsPDF = async () => {
+        const contentState = editorState.getCurrentContent();
+        const contentHtml = convertToHTML(contentState); // You need to implement the convertToHTML function
+        const pdfOptions = {
+            margin: 10,
+            filename: `${file.name ? file.name : 'swift-note'}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        };
 
-    //     // Apply the new block type to the selection
-    //     const withStyle = Modifier.setBlockType(
-    //         withoutStyles.getCurrentContent(),
-    //         withoutStyles.getSelectionAfter(),
-    //         newBlockType
-    //     );
 
-    //     const newState = EditorState.push(editorState, withStyle, 'change-block-type');
-    //     setEditorState(newState);
-    // };
-
-    // const handleStyleClick = (style) => {
-    //     let newBlockType = style;
-
-    //     if (style.startsWith('header')) {
-    //         const level = parseInt(style.substring(6), 10);
-    //         newBlockType = level >= 1 && level <= 6 ? `header-${level}` : 'unstyled';
-    //     }
-
-    //     applyBlockType(newBlockType);
-    // };
-    // const headingStyles = [1, 2, 3, 4, 5, 6];
+        html2pdf().from(contentHtml).set(pdfOptions).save();
+    };
     const handleUndo = () => {
         setEditorState(EditorState.undo(editorState));
     };
@@ -159,10 +147,12 @@ const Navbar = ({ editorState, setEditorState }) => {
     const handleRedo = () => {
         setEditorState(EditorState.redo(editorState));
     };
-
+    const handleHeadingClick = (headingType) => {
+        // Toggle heading style
+        setEditorState(RichUtils.toggleBlockType(editorState, headingType));
+    };
     return (
         <div style={{ minHeight: '2rem', paddingTop: '3px', paddingBottom: '3px' }} className=" sticky flex  top-0 z-50 justify-between gap-10 items-center px-3 border-b border-slate-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
-            {/* <img src={Icons.Swiftlogo} alt="" className="w-8 h-8 " /> */}
             <Icons.Swiftlogo width={36} height={36} />
             <div className="input   border-l border-slate-200 px-2">
                 <input type="text"
@@ -186,10 +176,9 @@ const Navbar = ({ editorState, setEditorState }) => {
                 <button onClick={() => handleClick(Constants.strikethrough)} className={`border-1  rounded-sm border-slate-200 p-2 ${isActiveStyle(Constants.strikethrough) ? 'bg-slate-600' : ''}`}>
                     <Icons.Strike fill='#e2e8f0' />
                 </button>
-                {/* <button onClick={() => handleClick(Constants.code)} className={`border-1  rounded-sm border-slate-200 p-2 ${isActiveStyle(Constants.strikethrough) ? 'bg-slate-600' : ''}`}>
-                    
-                    C
-                </button> */}
+                <button onClick={() => handleClick(Constants.code)} className={`border-1  rounded-sm border-slate-200 p-2 ${isActiveStyle(Constants.strikethrough) ? 'bg-slate-600' : ''}`}>
+                    <Icons.Code fill='#e2e8f0' />
+                </button>
                 <button onClick={() => toggleBlockType(Constants.OL)} className={`border-1 border-slate-200 p-2 ${BlockStyleControls(Constants.OL) ? 'bg-slate-600' : ''}`}>
                     <Icons.OrderdList fill='#e2e8f0' />
                 </button>
@@ -199,13 +188,9 @@ const Navbar = ({ editorState, setEditorState }) => {
                 {/* < Dropdown
                     handleSelect={handleSelect}
                 /> */}
-                {/* <div>
-                    {headingStyles.map((level) => (
-                        <button key={level} className={`border-1 border-slate-200 p-2 `} onClick={() => applyBlockType(`header-${level}`)}>
-                            H{level}
-                        </button>
-                    ))}
-                </div> */}
+                <div>
+                    <button className={`border-1 border-slate-200 p-2 ${BlockStyleControls(Constants.OL) ? 'bg-slate-600' : ''}`} onClick={() => handleHeadingClick('header-one')}>H1</button>
+                </div>
                 <button onClick={() => handleUndo()} className={`border-1 border-slate-200 p-2 ${BlockStyleControls(Constants.OL) ? 'bg-slate-600' : ''}`}>
                     <Icons.RotateLeft fill='#e2e8f0' />
 
@@ -227,7 +212,7 @@ const Navbar = ({ editorState, setEditorState }) => {
                         accept='text/*,application/rtf,application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document' type="file" name="file_upload" id="file_upload" className='hidden' />
                 </div>
                 <button
-                    onClick={handleDownload}
+                    onClick={downloadAsPDF}
                     type="button" className="py-1 px-3 text-sm font-medium text-center inline-flex items-center text-slate-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                     <Icons.Download className='w-4 h-4 me-2' /> Download
                 </button>

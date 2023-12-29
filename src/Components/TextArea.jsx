@@ -26,6 +26,24 @@ const TextArea = ({ editorState, setEditorState }) => {
     }
     const blockRenderMap = DefaultDraftBlockRenderMap.merge({
         CODE: { element: 'code' },
+        'header-one': {
+            element: 'h1',
+        },
+        'header-two': {
+            element: 'h2',
+        },
+        'header-three': {
+            element: 'h3',
+        },
+        'header-four': {
+            element: 'h4',
+        },
+        'header-five': {
+            element: 'h5',
+        },
+        'header-six': {
+            element: 'h6',
+        },
     });
     return (
         <div className='px-1 pt-1 font-coustom bg-slate-800 flex'>

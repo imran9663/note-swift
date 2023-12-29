@@ -10,6 +10,7 @@ import { ReactComponent as Strike } from './Strike.svg'
 import { ReactComponent as Swiftlogo } from './swiftLogo.svg'
 import { ReactComponent as RotateLeft } from './rotateLeft.svg'
 import { ReactComponent as RotateRight } from './rotateRight.svg'
+import { ReactComponent as Code } from './Code.svg'
 export const Icons = {
     Bold,
     Itaclic,
@@ -22,6 +23,6 @@ export const Icons = {
     Strike,
     Swiftlogo,
     RotateRight,
-    RotateLeft
+    RotateLeft, Code
 
 }
