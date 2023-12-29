@@ -1,5 +1,5 @@
 import React from 'react';
-import { Editor, RichUtils } from 'draft-js';
+import { Editor, RichUtils, DefaultDraftBlockRenderMap } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 
 const TextArea = ({ editorState, setEditorState }) => {
@@ -14,13 +14,49 @@ const TextArea = ({ editorState, setEditorState }) => {
         }
         return 'not-handled';
     };
-
+    const styleMap = {
+        CODE: {
+            backgroundColor: '#282a36',
+            color: '#f8f8f2',
+            fontFamily: 'monospace',
+            padding: '0.2em',
+            margin: '0',
+            borderRadius: '0.3em',
+        },
+    }
+    const blockRenderMap = DefaultDraftBlockRenderMap.merge({
+        CODE: { element: 'code' },
+        'header-one': {
+            element: 'h1',
+        },
+        'header-two': {
+            element: 'h2',
+        },
+        'header-three': {
+            element: 'h3',
+        },
+        'header-four': {
+            element: 'h4',
+        },
+        'header-five': {
+            element: 'h5',
+        },
+        'header-six': {
+            element: 'h6',
+        },
+    });
     return (
-        <div className='m-2'>
+        <div className='px-1 pt-1 font-coustom bg-slate-800 flex'>
             <Editor
+                className='font-coustom pad-t-1'
                 placeholder='Start your swift notes here ...'
                 editorState={editorState}
+                handleKeyCommand={handleKeyCommand}
                 onChange={handleEditorChange}
+                autoCorrect={true}
+                spellCheck={true}
+                customStyleMap={styleMap}
+                blockRenderMap={blockRenderMap}
             />
         </div>
     );

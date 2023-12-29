@@ -2,6 +2,7 @@ export const Constants = {
     bold: 'BOLD',
     underline: 'UNDERLINE',
     italic: 'ITALIC',
+    code: 'CODE',
     strikethrough: 'STRIKETHROUGH',
     h1: "header-one",
     h2: "header-two",

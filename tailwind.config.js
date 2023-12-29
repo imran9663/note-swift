@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    fontFamily: {
+      coustom: ['Playpen Sans', 'cursive']
+    }
   },
   plugins: [],
 }
