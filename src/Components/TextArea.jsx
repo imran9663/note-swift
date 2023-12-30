@@ -1,67 +1,65 @@
-import { Editor, EditorState, RichUtils } from 'draft-js';
+import React from 'react';
+import { Editor, RichUtils, DefaultDraftBlockRenderMap } from 'draft-js';
 import 'draft-js/dist/Draft.css';
-import React, { useEffect, useRef } from "react";
-const TextArea = (props) => {
 
-    const { editorState, setEditorState } = props
-
-    useEffect(() => {
-        editorRef.current.focus();
-    }, [])
-
-    const editorRef = useRef("");
-
-    useEffect(() => {
-        console.log("getPlainText", editorState.getCurrentContent());
-    }, [editorState])
-
-
-    const onChange = (newEditorState) => (setEditorState(newEditorState))
+const TextArea = ({ editorState, setEditorState }) => {
+    const handleEditorChange = (newEditorState) => {
+        setEditorState(newEditorState);
+    };
     const handleKeyCommand = (command, editorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command);
         if (newState) {
-            onChange(newState);
+            handleEditorChange(newState);
             return 'handled';
         }
         return 'not-handled';
     };
-    const handleClick = (paramCmd) => {
-        // console.log("par", paramCmd);
-        const newState = RichUtils.toggleInlineStyle(editorState, paramCmd);
-        onChange(newState);
-    };
-    const toggleBlockType = (blockType) => {
-        // console.log("toggle block", blockType);
-        const newState = RichUtils.toggleBlockType(editorState, blockType);
-        onChange(newState);
-
-    };
-    const handleChange = (newState) => onChange(newState)
     const styleMap = {
-        'STRIKETHROUGH': {
-            textDecoration: 'line-through',
+        CODE: {
+            backgroundColor: '#282a36',
+            color: '#f8f8f2',
+            fontFamily: 'monospace',
+            padding: '0.2em',
+            margin: '0',
+            borderRadius: '0.3em',
         },
-    };
-
-    // H1 = 32
-    // H2 = 24
-    // H3 = 19
-    // H4 = 16
-    // H5 = 14
-    // H6 = 13
-    return <div className='m-2'><Editor
-        ref={editorRef}
-        className="mt-2 mx-3"
-        placeholder={"Start your Note here ..."}
-        editorState={editorState}
-        autoCapitalize="true"
-        spellCheck
-        customStyleMap={styleMap}
-        stripPastedStyles={false}
-        handleKeyCommand={handleKeyCommand}
-        onChange={handleChange} />
-    </div>;
-
+    }
+    const blockRenderMap = DefaultDraftBlockRenderMap.merge({
+        CODE: { element: 'code' },
+        'header-one': {
+            element: 'h1',
+        },
+        'header-two': {
+            element: 'h2',
+        },
+        'header-three': {
+            element: 'h3',
+        },
+        'header-four': {
+            element: 'h4',
+        },
+        'header-five': {
+            element: 'h5',
+        },
+        'header-six': {
+            element: 'h6',
+        },
+    });
+    return (
+        <div className='px-1 pt-1 font-coustom bg-slate-800 flex'>
+            <Editor
+                className='font-coustom pad-t-1'
+                placeholder='Start your swift notes here ...'
+                editorState={editorState}
+                handleKeyCommand={handleKeyCommand}
+                onChange={handleEditorChange}
+                autoCorrect={true}
+                spellCheck={true}
+                customStyleMap={styleMap}
+                blockRenderMap={blockRenderMap}
+            />
+        </div>
+    );
 };
 
 export default TextArea;

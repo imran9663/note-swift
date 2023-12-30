@@ -6,7 +6,8 @@ A modern and minimalist note-taking web app built using React.js, Draft.js and T
 
 ## Tech Stack 💻
 
-- Frontend: React.js
+- Frontend: React.js 
+- RTF laibrary: Draft.js
 - Styling: Tailwind CSS
 
 ## Features 🎯

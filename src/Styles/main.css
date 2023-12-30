@@ -1,0 +1,63 @@
+.input{
+    min-width: 25rem;
+}
+.input input{
+    width: 100%;
+}
+.pad-t-1{
+  padding-top: 1rem;
+}
+.DraftEditor-root{
+  flex-grow: 1;
+    /* min-height: 90vh; */
+    height: calc(100vh - 4rem);
+    overflow-y: auto;
+}
+.sidebar{
+  height: calc(100vh - 2rem);
+}
+pre{
+  width: fit-content;
+  background-color: #282a36;
+            color: #f8f8f2;
+            font: monospace;
+            padding: 0.2em;
+            margin: 0.5rem 1rem;
+            border-radius: 0.3em;
+}
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #475569 #DFE9EB;
+}
+
+/* Chrome, Edge and Safari */
+*::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+*::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background-color: #DFE9EB;
+}
+
+*::-webkit-scrollbar-track:hover {
+  background-color: #B8C0C2;
+}
+
+*::-webkit-scrollbar-track:active {
+  background-color: #B8C0C2;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: #475569;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #64748B;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background-color: #94A3B8;
+}
