@@ -11,6 +11,9 @@ import { ReactComponent as Swiftlogo } from './swiftLogo.svg'
 import { ReactComponent as RotateLeft } from './rotateLeft.svg'
 import { ReactComponent as RotateRight } from './rotateRight.svg'
 import { ReactComponent as Code } from './Code.svg'
+import { ReactComponent as Doc } from './Doc.svg'
+import { ReactComponent as Pdf } from './Pdf.svg'
+import { ReactComponent as Chevaron } from './Chevaron.svg'
 export const Icons = {
     Bold,
     Itaclic,
@@ -23,6 +26,9 @@ export const Icons = {
     Strike,
     Swiftlogo,
     RotateRight,
-    RotateLeft, Code
+    RotateLeft,
+    Code,
+    Doc, Pdf,
+    Chevaron
 
 }

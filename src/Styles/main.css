@@ -22,9 +22,41 @@ pre{
             color: #f8f8f2;
             font: monospace;
             padding: 0.2em;
-            margin: 0.5rem 1rem;
+            margin: 0;
             border-radius: 0.3em;
 }
+
+        /* Custom styles for heading-one (H1) */
+.DraftEditor-root .header-one {
+  font-size: 2.125rem;
+}
+
+/* Custom styles for heading-two (H2) */
+.DraftEditor-root .header-two {
+  font-size: 1.875rem;
+}
+
+/* Custom styles for heading-three (H3) */
+.DraftEditor-root .header-three {
+  font-size: 1.5rem;
+  font-weight: bol
+}
+
+/* Custom styles for heading-four (H4) */
+.DraftEditor-root .header-four {
+  font-size:  1.25rem ;
+}
+
+/* Custom styles for heading-five (H5) */
+.DraftEditor-root .header-five {
+  font-size: 1.125rem;
+}
+
+/* Custom styles for heading-six (H6) */
+.DraftEditor-root .header-six {
+  font-size: 1rem ;
+}
+
 /* Firefox */
 * {
   scrollbar-width: thin;
