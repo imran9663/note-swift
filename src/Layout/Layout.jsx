@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import { EditorState } from 'draft-js';
+import React, { useEffect, useState } from 'react';
+import Footer from '../Components/Footer';
 import Navbar from '../Components/Navbar';
 import TextArea from '../Components/TextArea';
-import { EditorState } from 'draft-js';
-import Footer from '../Components/Footer';
-import FileEditor from '../Components/FileEditor';
-import Sidebar from '../Components/Sidebar';
-import '../Styles/main.css'
+import '../Styles/main.css';
 const Layout = () => {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const handleUnload = (event) => {
+        event.preventDefault();
+        return ''
+    }
+    useEffect(() => {
+        window.addEventListener('beforeunload', (event) => handleUnload(event))
+        return () => {
+            window.removeEventListener('beforeunload', (event) => handleUnload(event))
+        }
+    }, [])
+
     return (
         <>
             <div className=" flex flex-row">

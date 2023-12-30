@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import '../Styles/main.css';
 import { Icons } from '../assets/icons';
 import { Constants } from '../utils/constants';
+import Dropdown from './Dropdown'
 const Navbar = ({ editorState, setEditorState }) => {
 
     const [file, setfile] = useState({
@@ -18,6 +19,7 @@ const Navbar = ({ editorState, setEditorState }) => {
         const currentStyle = editorState.getCurrentInlineStyle();
         return currentStyle.has(style);
     };
+    const [toggleDonloadDD, settoggleDonloadDD] = useState(false)
     const handleClick = (param) => {
         if (param === 'CODE') {
             const newState = RichUtils.toggleCode(editorState);
@@ -51,11 +53,7 @@ const Navbar = ({ editorState, setEditorState }) => {
             const reader = new FileReader();
             reader.onload = (readerEvent) => {
                 const content = readerEvent.target.result;
-                // const blocksFromHTML = convertFromHTML(content);
-                // const state = ContentState.createFromBlockArray(
-                //     blocksFromHTML.contentBlocks,
-                //     blocksFromHTML.entityMap
-                // );
+
                 const contentState = ContentState.createFromText(content);
                 const editorStateWithContent = EditorState.createWithContent(contentState);
                 setEditorState(editorStateWithContent);
@@ -66,17 +64,7 @@ const Navbar = ({ editorState, setEditorState }) => {
                 console.log("error", reader.error);
             }
         }
-        // reader.onload = (e) => {
-        //     const fileContents = e.target.result;
-        //     const html = `<p>${fileContents}</p>`;
-        //     const blocksFromHTML = convertFromHTML(html);
-        //     const contentState = ContentState.createFromBlockArray(
-        //         blocksFromHTML.contentBlocks,
-        //         blocksFromHTML.entityMap
-        //     );
-        //     const editorState = EditorState.createWithContent(contentState);
-        //     onChange(editorState);
-        // };
+
 
     }
     const getCurrentStyles = () => {
@@ -148,9 +136,12 @@ const Navbar = ({ editorState, setEditorState }) => {
         setEditorState(EditorState.redo(editorState));
     };
     const handleHeadingClick = (headingType) => {
-        // Toggle heading style
-        setEditorState(RichUtils.toggleBlockType(editorState, headingType));
+        const newState = RichUtils.toggleBlockType(editorState, headingType);
+        setEditorState(newState);
     };
+    const handleDownloadDropdown = () => {
+        settoggleDonloadDD((prevState) => !prevState)
+    }
     return (
         <div style={{ minHeight: '2rem', paddingTop: '3px', paddingBottom: '3px' }} className=" sticky flex  top-0 z-50 justify-between gap-10 items-center px-3 border-b border-slate-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
             <Icons.Swiftlogo width={36} height={36} />
@@ -185,12 +176,11 @@ const Navbar = ({ editorState, setEditorState }) => {
                 <button onClick={() => toggleBlockType(Constants.UL)} className={`border-1 border-slate-200 p-2 ${BlockStyleControls(Constants.UL) ? 'bg-slate-600' : ''}`}>
                     <Icons.UnOrderdList fill='#e2e8f0' />
                 </button>
-                {/* < Dropdown
-                    handleSelect={handleSelect}
-                /> */}
-                <div>
-                    <button className={`border-1 border-slate-200 p-2 ${BlockStyleControls(Constants.OL) ? 'bg-slate-600' : ''}`} onClick={() => handleHeadingClick('header-one')}>H1</button>
-                </div>
+                < Dropdown
+                    editorState={editorState}
+                    setEditorState={setEditorState}
+                />
+
                 <button onClick={() => handleUndo()} className={`border-1 border-slate-200 p-2 ${BlockStyleControls(Constants.OL) ? 'bg-slate-600' : ''}`}>
                     <Icons.RotateLeft fill='#e2e8f0' />
 
@@ -211,13 +201,39 @@ const Navbar = ({ editorState, setEditorState }) => {
                         onChange={handleFileUpload}
                         accept='text/*,application/rtf,application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document' type="file" name="file_upload" id="file_upload" className='hidden' />
                 </div>
-                <button
-                    onClick={downloadAsPDF}
-                    type="button" className="py-1 px-3 text-sm font-medium text-center inline-flex items-center text-slate-200 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                    <Icons.Download className='w-4 h-4 me-2' /> Download
-                </button>
+
+
+                <div className=" relative  text-sm font-medium text-center inline-flex items-center text-slate-200 focus:outline-none bg-white rounded-lg border border-gray-200  focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600">
+                    <button
+                        onClick={handleDownload}
+                        type="button" className="flex flex-row pl-3 py-1  dark:hover:text-white dark:hover:bg-gray-700">
+                        <Icons.Download fill='#e2e8f0' className='w-4 h-4 me-2' /> Download
+                    </button>
+                    <button onClick={handleDownloadDropdown} id="dropdownDefaultButton" data-dropdown-toggle="dropdown" className=" ml-2 pr-2 py-1 border-l border-gray-200 dark:hover:text-white dark:hover:bg-gray-700" type="button">
+                        <Icons.Chevaron />
+                    </button>
+                    {
+                        toggleDonloadDD &&
+                        <div id="dropdown" className="z-10 absolute top-8 left-0  bg-white divide-y divide-gray-100 rounded-lg shadow w-36 dark:bg-gray-700">
+                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                                <button
+                                    onClick={downloadNoteAsDocument}
+                                    type="button" className="flex flex-row gap-2 px-4 py-2 w-full  hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    <Icons.Doc fill='#e2e8f0' className='w-4 h-4 me-2' /> Documnet
+                                </button>
+                                    <button
+                                        onClick={downloadAsPDF}
+                                        type="button" className="flex flex-row gap-2 px-4 py-2 w-full  hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                        <Icons.Pdf fill='#e2e8f0' className='w-4 h-4 me-2' /> PDF
+                                    </button>
+
+                            </ul>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
+
     );
 };
 

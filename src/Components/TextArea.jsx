@@ -23,6 +23,15 @@ const TextArea = ({ editorState, setEditorState }) => {
             margin: '0',
             borderRadius: '0.3em',
         },
+
+        'header-one': {
+            fontSize: '24px',
+            fontWeight: 'bold',
+        },
+        'header-two': {
+            fontSize: '20px',
+            fontWeight: 'bold',
+        },
     }
     const blockRenderMap = DefaultDraftBlockRenderMap.merge({
         CODE: { element: 'code' },
@@ -45,6 +54,12 @@ const TextArea = ({ editorState, setEditorState }) => {
             element: 'h6',
         },
     });
+    const blockStyleFn = (contentBlock) => {
+        const type = contentBlock.getType();
+        if (type.startsWith('header')) {
+            return `header-style ${type}`;
+        }
+    };
     return (
         <div className='px-1 pt-1 font-coustom bg-slate-800 flex'>
             <Editor
@@ -53,10 +68,11 @@ const TextArea = ({ editorState, setEditorState }) => {
                 editorState={editorState}
                 handleKeyCommand={handleKeyCommand}
                 onChange={handleEditorChange}
-                autoCorrect={true}
+                autoCorrect={"true"}
                 spellCheck={true}
                 customStyleMap={styleMap}
                 blockRenderMap={blockRenderMap}
+                blockStyleFn={blockStyleFn}
             />
         </div>
     );
