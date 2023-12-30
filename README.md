@@ -1,6 +1,6 @@
 # Note Swift 🗒️
 
-A modern and minimalist note-taking web app built using React.js and Tailwind CSS.
+A modern and minimalist note-taking web app built using React.js, Draft.js and Tailwind CSS.
 
 ![Note Swift App](./public/favicon.ico)
 
