@@ -218,11 +218,11 @@ const Navbar = ({ editorState, setEditorState }) => {
                   dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600">
                     <button
                         onClick={handleDownload}
-                        type="button" className="flex flex-row pl-3 py-1 text-slate-600   dark:hover:text-white dark:hover:bg-gray-700">
+                        type="button" className="flex flex-row pl-3 py-1 text-slate-600 dark:text-slate-400   dark:hover:text-white dark:hover:bg-gray-700">
                         <Icons.Download fill='#e2e8f0' className='w-4 h-4 me-2' /> Download
                     </button>
-                    <button onClick={handleDownloadDropdown} id="dropdownDefaultButton" data-dropdown-toggle="dropdown" className=" ml-2 pr-2 py-1 border-l border-gray-200 dark:hover:text-white dark:hover:bg-gray-700" type="button">
-                        <Icons.Chevaron fill='#e2e8f0' className='w-4 h-4  text-slate-600' />
+                    <button onClick={handleDownloadDropdown} id="dropdownDefaultButton" data-dropdown-toggle="dropdown" className=" ml-2 pr-2 py-1 border-l dark:text-slate-200 border-gray-200 dark:hover:text-white dark:hover:bg-gray-700 dark:border-gray-600" type="button">
+                        <Icons.Chevaron fill='#e2e8f0' className='w-4 h-4 ml-2  text-slate-600 dark:text-slate-400' />
                     </button>
                     {
                         toggleDonloadDD &&
