@@ -61,7 +61,7 @@ const TextArea = ({ editorState, setEditorState }) => {
         }
     };
     return (
-        <div className='px-1 pt-1 font-coustom bg-slate-800 flex'>
+        <div className='px-1 pt-1 font-coustom dark:bg-slate-800 bg-white flex'>
             <Editor
                 className='font-coustom pad-t-1'
                 placeholder='Start your swift notes here ...'
