@@ -3,12 +3,14 @@ import { ContentState, EditorState, RichUtils } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import HtmlToRtfBrowser from 'html-to-rtf-browser';
 import html2pdf from 'html2pdf.js';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../Styles/main.css';
 import { Icons } from '../assets/icons';
-import { Constants } from '../utils/constants';
+import { Constants, pathNames } from '../utils/constants';
 import Dropdown from './Dropdown'
-const Navbar = ({ editorState, setEditorState }) => {
+import { useLocation } from 'react-router';
+const Navbar = ({ editorState, setEditorState, setUploadedFilesForScan }) => {
+    let location = useLocation();
 
     const [file, setfile] = useState({
         name: '',
@@ -67,6 +69,12 @@ const Navbar = ({ editorState, setEditorState }) => {
 
 
     }
+    const handleFilesUploadedForScan = (e) => {
+        const { files } = e.target;
+        if (files) {
+            setUploadedFilesForScan(files)
+        }
+    }
     const getCurrentStyles = () => {
         const selection = editorState.getSelection();
         const currentContent = editorState.getCurrentContent();
@@ -89,7 +97,6 @@ const Navbar = ({ editorState, setEditorState }) => {
     const handleDownload = () => {
         const contentState = editorState.getCurrentContent();
         const contentText = contentState.getPlainText();
-        console.log("contentState style", getCurrentStyles());
         const blob = new Blob([contentText], { type: file.type ? file.type : 'text/plain' });
         const url = URL.createObjectURL(blob);
 
@@ -192,6 +199,7 @@ const Navbar = ({ editorState, setEditorState }) => {
                 </button>
             </div>
             <div className=" w-fit flex gap-2 flex-row justify-start items-center border-l px-2 border-slate-400 dark:border-slate-200">
+                {location.pathname === pathNames.default && <>
                 <a href="/" target='_blank' type="button" className="py-1 px-3 text-sm font-medium text-center inline-flex items-center rounded-lg border
                  text-slate-600 focus:outline-none bg-white  border-gray-200 hover:bg-slate-200
                  focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800
@@ -210,6 +218,23 @@ const Navbar = ({ editorState, setEditorState }) => {
                         onChange={handleFileUpload}
                         accept='text/*,application/rtf,application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document' type="file" name="file_upload" id="file_upload" className='hidden' />
                 </div>
+                </>}
+                {
+                    location.pathname === pathNames.scan &&
+                    <>
+                        <div className="py-1">
+                            <label htmlFor='file_upload' type="button" className="py-1 cursor-pointer px-3 text-sm font-medium text-center inline-flex items-center rounded-lg border
+                 text-slate-600 focus:outline-none bg-white  border-gray-200 hover:bg-slate-200
+                 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800
+                  dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                <Icons.Upload fill='#e2e8f0' className='w-4 h-4 me-2' /> Upload to Scan
+                            </label>
+                            <input
+                                onChange={handleFilesUploadedForScan}
+                                accept='image/*' multiple type="file" name="file_upload" id="file_upload" className='hidden' />
+                        </div>
+                    </>
+                }
 
 
                 <div className=" relative  text-sm font-medium text-center inline-flex items-center

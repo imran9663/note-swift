@@ -14,6 +14,10 @@ import { ReactComponent as Code } from './Code.svg'
 import { ReactComponent as Doc } from './Doc.svg'
 import { ReactComponent as Pdf } from './Pdf.svg'
 import { ReactComponent as Chevaron } from './Chevaron.svg'
+import { ReactComponent as Scan } from './scan.svg'
+import { ReactComponent as Check } from './check-circle.svg'
+import { ReactComponent as Alert } from './alert-octagon.svg'
+import { ReactComponent as Close } from './x-circle.svg'
 export const Icons = {
     Bold,
     Itaclic,
@@ -29,6 +33,6 @@ export const Icons = {
     RotateLeft,
     Code,
     Doc, Pdf,
-    Chevaron
+    Chevaron, Scan, Check, Alert, Close
 
 }
