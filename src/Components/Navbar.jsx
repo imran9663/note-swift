@@ -8,7 +8,7 @@ import '../Styles/main.css';
 import { Icons } from '../assets/icons';
 import { Constants, pathNames } from '../utils/constants';
 import Dropdown from './Dropdown'
-import { useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router';
 const Navbar = ({ editorState, setEditorState, setUploadedFilesForScan }) => {
     let location = useLocation();
 
@@ -152,7 +152,7 @@ const Navbar = ({ editorState, setEditorState, setUploadedFilesForScan }) => {
     return (
         <div style={{ minHeight: '2rem', paddingTop: '3px', paddingBottom: '3px' }}
             className=" sticky flex  top-0 z-50 justify-between gap-10 items-center px-3 border-b border-slate-400 dark:border-slate-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
-            <Icons.Swiftlogo width={36} height={36} className='dark:text-slate-400 text-slate-900' />
+            <Icons.Swiftlogo width={36} height={36} stroke='#00b3b3' fill='#00b3b3' />
             <div className="input border-l border-slate-400 dark:border-slate-200 px-2">
                 <input type="text"
                     placeholder='swift-note (1)'
@@ -199,6 +199,14 @@ const Navbar = ({ editorState, setEditorState, setUploadedFilesForScan }) => {
                 </button>
             </div>
             <div className=" w-fit flex gap-2 flex-row justify-start items-center border-l px-2 border-slate-400 dark:border-slate-200">
+                {location.pathname !== pathNames.scan &&
+                    <><Link to={`${pathNames.scan}`} className="text-dark bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg py-1 px-3 text-sm text-center  flex flex-row justify-between gap-2 items-center">
+
+                        <Icons.Scan width={18} /> <p>Scan</p>
+
+                    </Link>
+                    </>
+                }
                 {location.pathname === pathNames.default && <>
                 <a href="/" target='_blank' type="button" className="py-1 px-3 text-sm font-medium text-center inline-flex items-center rounded-lg border
                  text-slate-600 focus:outline-none bg-white  border-gray-200 hover:bg-slate-200
@@ -219,6 +227,7 @@ const Navbar = ({ editorState, setEditorState, setUploadedFilesForScan }) => {
                         accept='text/*,application/rtf,application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document' type="file" name="file_upload" id="file_upload" className='hidden' />
                 </div>
                 </>}
+
                 {
                     location.pathname === pathNames.scan &&
                     <>
