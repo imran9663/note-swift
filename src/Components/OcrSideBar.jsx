@@ -4,9 +4,11 @@ import '../Styles/main.css'
 import { useEffect } from 'react'
 import Tesseract from 'tesseract.js'
 import supportedLangs from '../utils/languages.json'
+import NoImages from './NoImages'
+import DropdownWithSearch from './DropdownWithSearch'
 const OcrSideBar = (props) => {
     const { files, getOCRData } = props;
-    const [objectFiles, setObjectFiles] = useState(null);
+    const [objectFiles, setObjectFiles] = useState([]);
     const [scannedData, setScannedData] = useState([]);
     const [isScanning, setIsScanning] = useState(false);
     const [selectedLng, setSelectedLng] = useState('eng');
@@ -70,36 +72,68 @@ const OcrSideBar = (props) => {
     }
     const handleLngSelect = (e) => {
         const { value } = e.target;
-        console.log("selected lng",value);
+        console.log("selected lng", value);
         setSelectedLng(value)
     }
     const handleCrossClick = (selectInd) => {
         const filteredObjects = objectFiles.filter((item, ind) => ind !== selectInd);
         setObjectFiles(() => [...filteredObjects])
     }
+    const handlePaste = (e) => {
+        const clipBoardItems = e.clipboardData?.items;
+        console.log('clipBoardItems', clipBoardItems)
+        if (!clipBoardItems) {
+            //show error toast 
+            console.log("No Images In Clipboard");
+            return
+        }
+        let clipImages = [];
+        for (let i = 0; i < clipBoardItems.length; i++) {
+            const item = clipBoardItems[i];
+            console.log("item", item);
+            if (item.type.indexOf('image') !== 1) {
+                const blob = item.getAsFile();
+                const imageObject = {
+                    name: `Clipboard_image-${i}`,
+                    imageUrl: URL.createObjectURL(blob),
+                    isScanning: false,
+                    isScanSuccess: false,
+                    isScanFailed: false,
+                    progress: 0,
+                    msg: ''
+                }
+                clipImages.push(imageObject)
+            }
+        }
+        if (clipImages.length > 0) {
+            setObjectFiles(() => [...objectFiles, ...clipImages])
+        }
+
+    }
     return (
         <>
             <div className="w-1/4 border-r   border-slate-400 dark:border-slate-200  bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
-                <div className=" w-100  p-2 flex flex-row justify-between content-center ">
+                <div className=" w-100  p-2 flex flex-row justify-between items-center ">
+                    {/* <div className="w-full relative inline-block text-left border-0 ">
 
-                    <div className="relative inline-block text-left border-0 ">
                         <select onChange={handleLngSelect} value={selectedLng}
                             className=" justify-center shadow-sm ring-0  rounded-md px-3  py-1 text-sm font-semibold
                                      dark:bg-slate-800 dark:text-slate-200  dark:hover:bg-slate-600
                                       text-gray-950   hover:bg-slate-300
                                     after:content-['*'] after:ml-0.5 ">
                             {supportedLangs.map((lng) => <option
-                                value={lng.code}
+                                            value={lng.code}
                                 className='appearance-none dark:text-slate-200
                                  hover:bg-slate-300 px-4 py-2 dark:bg-slate-800
                                   min-w-5 text-sm dark:hover:bg-slate-600
                                    dark:hover:text-slate-100' >
-                                {lng.language}
+                                            {lng.language}
                             </option>)}
 
 
                         </select>
-                    </div>
+                    </div> */}
+                    <DropdownWithSearch setSelectedLng={setSelectedLng} />
 
                     <button
                         onClick={handleScanClick}
@@ -114,8 +148,8 @@ const OcrSideBar = (props) => {
                         </div>
                     </button>
                 </div>
-                <hr className="h-px my-2  bg-gray-200 border-0 dark:bg-gray-700" />
-                <div style={{ height: '80vh' }} className="flex mt-4 px-2  flex-row gap-2  flex-wrap justify-around overflow-y-scroll ">
+                <hr className="h-px mb-2  bg-gray-200 border-0 dark:bg-gray-700" />
+                <div onPaste={handlePaste} tabIndex={0} style={{ height: '80vh', overflowY: 'auto' }} className="flex mt-4 px-2  flex-row gap-2  flex-wrap justify-around items-start">
                     {objectFiles?.map((previewImage, index) =>
                         <div style={{ height: 'fit-content' }} className='w-24 rounded-sm'>
                             <figure className={"w-24 h-auto relative"}>
@@ -153,9 +187,12 @@ const OcrSideBar = (props) => {
                                 </figcaption>
                             </figure>
                         </div>)}
-                    { }
+                    {(!objectFiles || objectFiles?.length === 0) &&
+                        <NoImages />
+                    }
 
                 </div>
+
 
             </div>
         </>

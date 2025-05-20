@@ -6,6 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import Layout from './Layout/Layout';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import OcrLayout from './Layout/OcrLayout';
+import Test from './Components/Test';
+import ErrorPage from './Layout/ErrorPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,6 +16,7 @@ root.render(
       <Routes>
         <Route path={"/"} element={<Layout />} />
         <Route path={"/scan"} element={<OcrLayout />} />
+        <Route path={"/*"} element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
