@@ -4,11 +4,18 @@ import './index.css';
 
 import reportWebVitals from './reportWebVitals';
 import Layout from './Layout/Layout';
+import { BrowserRouter, Route, Routes } from 'react-router';
+import OcrLayout from './Layout/OcrLayout';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Layout />
+    <BrowserRouter>
+      <Routes>
+        <Route path={"/"} element={<Layout />} />
+        <Route path={"/scan"} element={<OcrLayout />} />
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

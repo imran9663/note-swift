@@ -15,3 +15,7 @@ export const Constants = {
     normal: 'N',
 
 }
+export const pathNames = {
+    default: '/',
+    scan: '/scan'
+}
