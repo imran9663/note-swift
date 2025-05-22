@@ -1,29 +1,54 @@
 # Note Swift 🗒️
 
-A modern and minimalist note-taking web app built using React.js, Draft.js and Tailwind CSS.
+A modern, minimalist note-taking and OCR web app built using React.js, Draft.js, Tailwind CSS, and Tesseract.js.
 
 ![Note Swift App](./public/favicon.ico)
 
-## Tech Stack 💻
+## 🌐 Live Demo
 
-- Frontend: React.js 
-- RTF laibrary: Draft.js
-- Styling: Tailwind CSS
+👉 Visit the app: [Note Swift - Scan](https://note-swift.netlify.app/scan)
 
-## Features 🎯
+## 🧰 Tech Stack
 
+- **Frontend**: React.js
+- **Rich Text Editing**: Draft.js
+- **Styling**: Tailwind CSS
+- **OCR Engine**: [Tesseract.js](https://github.com/naptha/tesseract.js#tesseractjs) — supports 100+ languages
+
+## ✨ Features
+
+### 📝 Note-taking
 - Add new notes
 - Edit existing notes
-- Download notes 
-- No Login No Signup required
+- Download notes in various formats
+- No login or signup required
 
-## Installation & Usage 🛠️
+### 🔍 OCR Text Extraction (`/scan` Route)
+- Upload multiple image files (supports all common formats like PNG, JPG, BMP, etc.)
+- Paste screenshots directly using **Ctrl + V**
+- Extract text using powerful Tesseract.js OCR engine
+- Download extracted text as `.txt`, `.docx`, or `.pdf`
 
-1. Clone the repository:
+## 🚀 Installation & Usage
+
+1. **Clone the repository**:
 
    ```bash
    git clone https://github.com/imran9663/note-swift.git
+   ```
 
-   ``` npm install ``` to insatll teh node modules
+2. **Install dependencies**:
 
-    ``` npm run start ``` to Run the local development server
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**:
+
+   ```bash
+   npm run start
+   ```
+
+---
+
+📌 Built with ❤️ by Imran Pasha

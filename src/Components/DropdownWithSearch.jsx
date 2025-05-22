@@ -19,7 +19,7 @@ const DropdownWithSearch = (props) => {
   }
   return (
     <>
-      <div style={{width:'fit-content'}} className="relative top-0 left-0  flex flex-col">
+      <div style={{ width: 'fit-content' }} className="relative top-0 left-0 bg-white dark:bg-slate-800 text-slate-900 dark:text-white flex flex-col">
         <div className="flex h-10 border border-b-2 border-slate-500 items-center max-w-sm mx-auto 
           dark:border-slate-700 text-sm dark:placeholder:text-slate-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
           <label htmlFor="simple-search" className="sr-only">Search</label>

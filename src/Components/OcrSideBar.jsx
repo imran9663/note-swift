@@ -112,7 +112,7 @@ const OcrSideBar = (props) => {
     }
     return (
         <>
-            <div className="w-1/4 border-r   border-slate-400 dark:border-slate-200  bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
+            <div className="  h-full border-r   border-slate-400 dark:border-slate-200  bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
                 <div className=" w-100  p-2 flex flex-row justify-between items-center ">
                     {/* <div className="w-full relative inline-block text-left border-0 ">
 

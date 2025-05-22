@@ -20,6 +20,7 @@ import { ReactComponent as Alert } from "./alert-octagon.svg";
 import { ReactComponent as Close } from "./x-circle.svg";
 import { ReactComponent as UploadCloud } from "./cloud-upload.svg";
 import { ReactComponent as ClipboardPaste } from "./clipboard-paste.svg";
+import { ReactComponent as ChevronRight } from "./chevron-right.svg";
 export const Icons = {
     Bold,
     Itaclic,
@@ -43,4 +44,5 @@ export const Icons = {
     Close,
     UploadCloud,
     ClipboardPaste,
+    ChevronRight
 };
