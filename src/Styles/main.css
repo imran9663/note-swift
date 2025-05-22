@@ -13,6 +13,15 @@
     height: calc(100vh - 4rem);
     overflow-y: auto;
 }
+@media only screen and (max-width:600px) {
+  .DraftEditor-root{
+    flex-grow: 1;
+      /* min-height: 90vh; */
+      height: calc(100vh - 6rem);
+      overflow-y: auto;
+      padding: 1rem;
+  }
+}
 .sidebar{
   height: calc(100vh - 2rem);
 }

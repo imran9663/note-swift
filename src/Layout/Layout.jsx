@@ -19,10 +19,10 @@ const Layout = () => {
 
     return (
         <>
-            <div className=" flex flex-row">
+            <div id='layout' className=" flex flex-row overflow-hidden">
                 {/* <Sidebar /> */}
-                <div className=' h-screen flex flex-col flex-1 overflow-hidden bg-white dark:bg-slate-600 text-slate-900 dark:text-white'>
-            <Navbar editorState={editorState} setEditorState={setEditorState} />
+                <div className=' h-screen flex flex-col flex-1 overflow-hidden bg-white dark:bg-slate-600 text-slate-900 dark:text-white '>
+                    <Navbar editorState={editorState} setEditorState={setEditorState} />
                     <TextArea editorState={editorState} setEditorState={setEditorState} />
                     {/* <FileEditor /> */}
                     <Footer editorState={editorState} setEditorState={setEditorState} />
