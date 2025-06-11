@@ -49,13 +49,12 @@ const Navbar = ({ editorState, setEditorState, setUploadedFilesForScan }) => {
         return style === blockType
     }
     const handleFileUpload = (e) => {
-        const uploadedFile = e.target.files[0]
+        const uploadedFile = e.target.files[0];
         if (uploadedFile) {
             setfile({ ...file, name: `${String(uploadedFile.name).split('.')[0]}`, type: uploadedFile.type, fileExt: `.${String(uploadedFile.name).split('.')[1]}` })
             const reader = new FileReader();
             reader.onload = (readerEvent) => {
                 const content = readerEvent.target.result;
-
                 const contentState = ContentState.createFromText(content);
                 const editorStateWithContent = EditorState.createWithContent(contentState);
                 setEditorState(editorStateWithContent);
@@ -65,6 +64,8 @@ const Navbar = ({ editorState, setEditorState, setUploadedFilesForScan }) => {
             reader.onerror = () => {
                 console.log("error", reader.error);
             }
+            // Reset the input value for mobile compatibility
+            e.target.value = '';
         }
 
 
@@ -149,6 +150,7 @@ const Navbar = ({ editorState, setEditorState, setUploadedFilesForScan }) => {
     const handleDownloadDropdown = () => {
         settoggleDonloadDD((prevState) => !prevState)
     }
+    const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
     return (
         <>
         <div style={{ minHeight: '2rem', paddingTop: '3px', paddingBottom: '3px' }}
@@ -200,9 +202,9 @@ const Navbar = ({ editorState, setEditorState, setUploadedFilesForScan }) => {
             </div>
             <div className=" w-fit flex gap-2 flex-row justify-start items-center border-l px-2 border-slate-400 dark:border-slate-200">
                 {location.pathname !== pathNames.scan &&
-                        <><Link title='scan Images' to={`${pathNames.scan}`} className="text-dark bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg py-1 px-1 md:px-3 text-sm text-center  flex flex-row justify-between gap-2 items-center">
+                        <>
+                            <Link title='scan Images' to={`${pathNames.scan}`} className="text-dark bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg py-1 px-1 md:px-3 text-sm text-center  flex flex-row justify-between gap-2 items-center">
                             <Icons.Scan className='w-4 md:h-4' /> <p className='hidden text-[6px] md:text-sm md:block '>Scan</p>
-
                     </Link>
                     </>
                 }
@@ -236,10 +238,19 @@ const Navbar = ({ editorState, setEditorState, setUploadedFilesForScan }) => {
                  focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800
                   dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                                 <Icons.Upload fill='#e2e8f0' className='w-4 h-4 me-2' /> Upload to Scan
-                            </label>
-                            <input
-                                onChange={handleFilesUploadedForScan}
-                                accept='image/*' multiple type="file" name="file_upload" id="file_upload" className='hidden' />
+                                </label>
+                                {isMobile ? <input
+                                    onChange={handleFilesUploadedForScan}
+                                    accept='image/*'
+                                    multiple type="file"
+                                    capture='environment'
+                                    name="file_upload" id="file_upload" className='hidden' />
+                                    :
+                                    <input
+                                        onChange={handleFilesUploadedForScan}
+                                        accept='image/*'
+                                        multiple type="file"
+                                        name="file_upload" id="file_upload" className='hidden' />}
                         </div>
                     </>
                 }
